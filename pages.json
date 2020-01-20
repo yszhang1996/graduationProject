@@ -35,6 +35,11 @@
 			"path": "pages/tabbar-3-detial/tabbar-3-qa/tabbar-3-qa",
 			"style": {}
 		}
+	    ,{
+            "path" : "pages/shop/shop",
+            "style" : {
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -43,7 +48,7 @@
 	},
 	"tabBar": {
 		"borderStyle": "black",
-		"backgroundColor": "#333",
+		"backgroundColor": "#f6e1b9",
 		"color": "#8F8F94",
 		"selectedColor": "#f33e54",
 		"list": [{
@@ -54,9 +59,9 @@
 			},
 			{
 				"pagePath": "pages/tabbar/tabbar-2/tabbar-2",
-				"iconPath": "static/img/tabbar/guanzhu.png",
-				"selectedIconPath": "static/img/tabbar/guanzhuactive.png",
-				"text": "关注"
+				"iconPath": "static/img/tabbar/vip.png",
+				"selectedIconPath": "static/img/tabbar/vipactive.png",
+				"text": "会员"
 			},
 			//#ifdef MP-WEIXIN
 			{
@@ -75,9 +80,9 @@
 			//#endif
 			{
 				"pagePath": "pages/tabbar/tabbar-4/tabbar-4",
-				"iconPath": "static/img/tabbar/news.png",
-				"selectedIconPath": "static/img/tabbar/newsactive.png",
-				"text": "消息"
+				"iconPath": "static/img/tabbar/order.png",
+				"selectedIconPath": "static/img/tabbar/orderactive.png",
+				"text": "订单"
 			},
 			{
 				"pagePath": "pages/tabbar/tabbar-5/tabbar-5",
