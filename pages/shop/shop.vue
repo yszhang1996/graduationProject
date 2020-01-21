@@ -21,27 +21,36 @@
 							<view class="money">价格：¥{{item2.price}}</view>
 						</view>
 						<view class="goodsPrice">
-							<text class="changeGoodsPrice" @click="Number1(item,item2)">-</text>
+							<text class="changeGoodsPrice" @click="Number1(index,index2)">-</text>
 							<text class="goodsNumber">{{item2.goodsNumber}}</text>
-							<text class="changeGoodsPrice">+</text>
+							<text class="changeGoodsPrice" @click="Number2(index,index2)">+</text>
 						</view>
 					</view>
 				</view>
 			</scroll-view>
 		</view>
+		<button class="button" type="primary" @click="togglePopup('bottom', 'popup')">底</button>
+		<cart-icon v-if="!showCartFlag" class="cart-icon" :carts="cartsNumber" :flag="showCartFlag" @func="getMsgFormSon"></cart-icon>
+		<uni-popup ref="showpopup" :type="type" @change="change" @func="getMsgFormSon1"><text class="popup-content">{{ content }}</text></uni-popup>
 	</view>
 </template>
 
 <script>
+	import cartIcon from "@/components/cart-icon/cart-icon.vue"
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	export default {
 		data() {
 			return {
+				showCartFlag: false,
 				scrollHeight: '500px',
 				leftArray: [],
 				mainArray: [],
 				topArr: [],
 				leftIndex: 0,
-				scrollInto: ''
+				scrollInto: '',
+				type: '',
+				content: '顶部弹 popup',
+				cartsNumber: 0,
 			}
 		},
 		onLoad() {
@@ -66,29 +75,34 @@
 
 				left = ["小食", "饮料", "主食"];
 
-				let list = [{
-					id: 1,
-					title: "泡面",
-					monthlySales: 10,
-					price: 25,
-					goodsNumber: 0
-				}, {
-					id: 2,
-					title: "火腿肠",
-					monthlySales: 5,
-					price: 10,
-					goodsNumber: 0
-				}]
 				main = [{
 					title: `小食类商品标题`,
-					list
-				}, {
-					title: `饮料类商品标题`,
-					list
+					list: [{
+						id: 1,
+						title: "火腿肠",
+						monthlySales: 5,
+						price: 10,
+						goodsNumber: 0
+					}]
 				}, {
 					title: `主食类商品标题`,
-					list
-				}]
+					list: [{
+						id: 2,
+						title: "泡面",
+						monthlySales: 5,
+						price: 10,
+						goodsNumber: 0
+					}]
+				}, {
+					title: `饮料类商品标题`,
+					list: [{
+						id: 3,
+						title: "可乐",
+						monthlySales: 5,
+						price: 10,
+						goodsNumber: 0
+					}]
+				}];
 				this.leftArray = left;
 				this.mainArray = main;
 
@@ -140,16 +154,82 @@
 				let index = e.currentTarget.dataset.index;
 				this.scrollInto = `item-${index}`;
 			},
-			Number1(item, item2) {
+			Number1(index, index2) {
 				var list = this.mainArray
-				console.log(JSON.stringify(list))
-				// var num = list[item].list[item2].goodsNumber;
-				
-				// num = num + 1;
-				// list[item].list[item2].goodsNumber = num;
+				// console.log(index);
+				// console.log(index2);
+				// console.log(JSON.stringify(list[index].list[index2].goodsNumber))
+				var num = list[index].list[index2].goodsNumber;
+				if (num <= 0) {
 
+				} else {
+					num = num - 1;
+					list[index].list[index2].goodsNumber = num;
+					this.cartsNumber -= 1;
+				}
+			},
+			Number2(index, index2) {
+				var list = this.mainArray
+				// console.log(index);
+				// console.log(index2);
+				// console.log(JSON.stringify(list[index].list[index2].goodsNumber))
+				var num = list[index].list[index2].goodsNumber;
+				if (num >= 9) {
+
+				} else {
+					num = num + 1;
+					list[index].list[index2].goodsNumber = num;
+					this.cartsNumber += 1;
+				}
+
+			},
+			togglePopup(type, open) {
+				switch (type) {
+					case 'top':
+						this.content = '顶部弹出 popup'
+						break
+
+					case 'bottom':
+						this.content = '底部弹出 popup'
+						break
+					case 'center':
+						this.content = '居中弹出 popup'
+						break
+				}
+				this.type = type
+				this.$nextTick(() => {
+					console.log(this.$refs);
+					this.$refs['show' + open].open()
+				})
+			},
+			onBackPress() {
+				console.log("11");
+				this.$refs['showpopup'].close()
+				this.$refs['showtip'].close()
+				this.$refs['showimage'].close()
+				this.$refs['showshare'].close()
+			},
+			getMsgFormSon(data) {
+				this.showCartFlag = data
+				console.log(this.showCartFlag)
+			},
+			getMsgFormSon1(data) {
+				this.showCartFlag = data
+				console.log(this.showCartFlag)
 			}
-		}
+		},
+		components: {
+			cartIcon,
+			uniPopup
+		},
+		watch: {
+		    // 如果 `question` 发生改变，这个函数就会运行
+		    showCartFlag: function (New, Old) {
+		      if(New == true){
+				  this.togglePopup('bottom', 'popup');
+			  }
+		    }
+		},
 	}
 </script>
 
@@ -276,5 +356,20 @@
 				}
 			}
 		}
+	}
+
+	.cart-icon {
+		position: absolute;
+		bottom: 100upx;
+		right: 50upx;
+	}
+
+	.popup-content {
+		/* #ifndef APP-NVUE */
+		display: block;
+		/* #endif */
+		background-color: #fff;
+		padding: 15px;
+		font-size: 14px;
 	}
 </style>

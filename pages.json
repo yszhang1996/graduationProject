@@ -40,6 +40,10 @@
             "style" : {
 			}
         }
+        ,{
+            "path" : "components/cart-icon/cart-icon",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
