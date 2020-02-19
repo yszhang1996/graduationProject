@@ -1,13 +1,14 @@
 <template>
 	<view>
 		<image class="cart-image" src="/static/img/cart/cart.png" mode="" @click="sendMsg()"></image>
-		<text class="red-dot" v-if="carts > 0">{{carts}}</text>
+		<text class="red-dot" v-if="$store.state.cartsNumber > 0">{{$store.state.cartsNumber}}</text>
 		<!-- <button class="button" type="primary" @click="togglePopup('bottom', 'popup')">底部弹出 popup</button> -->
 	</view>
 </template>
 
 <script>
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import { mapState, mapMutations } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -52,12 +53,14 @@
 			},
 			sendMsg() {
 				//func: 是父组件指定的传数据绑定的函数，this.msg:子组件给父组件传递的数据
-				this.flag = true 
-				this.$emit('func', this.flag)
+				this.$store.state.showCartsList = true
 			}
 		},
 		components: {
 			uniPopup
+		},
+		computed: {
+			...mapState(['cartsNumber'])
 		},
 		props: [
 			'carts',

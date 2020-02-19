@@ -129,7 +129,8 @@
 			onTap() {
 				if (!this.maskClick) return
 				this.close()
-				console.log("111");
+				this.$store.state.showCartsList = false
+				// console.log("111"); //打印得到此处是关闭弹出层必会执行的函数，所以在此把全局变量showCartsList标识符设置为默认值（不显示）
 			},
 			sendMsg() {
 				//func: 是父组件指定的传数据绑定的函数，this.msg:子组件给父组件传递的数据
