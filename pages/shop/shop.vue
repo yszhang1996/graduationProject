@@ -49,10 +49,13 @@
 						</view>
 					</view>
 				</view>
-				<view class="">
+				<view v-if="!vip" class="">
 					总计：¥{{totalAmount()}}
 				</view>
-				<view class="">
+				<view v-else class="">
+					总计：<text class="oldPrice">¥{{totalAmount()}}</text><text class="newPrice">¥{{totalAmount()*0.8}}</text>
+				</view>
+				<view class="" @click="checkOut()">
 					结算
 				</view>
 			</view>
@@ -75,7 +78,9 @@ export default {
 			leftIndex: 0,
 			scrollInto: '',
 			type: 'bottom',
-			content: '底部弹 popup'
+			content: '底部弹 popup',
+			name: '',
+			vip: true,
 		};
 	},
 	onLoad() {
@@ -83,6 +88,26 @@ export default {
 			success: res => {
 				/* 设置当前滚动容器的高，若非窗口的高度，请自行修改 */
 				this.scrollHeight = `${res.windowHeight}px`;
+			}
+		});
+		uni.getStorage({
+			key: 'userInfo',
+			success: function(res) {
+				this.name = res.data.username;
+			}.bind(this),
+			fail: function(res) {
+				uni.showToast({
+					icon: 'none',
+					title: '购物系统出错，返回重试',
+					duration: 1500,
+					success: function() {
+						setTimeout(function() {
+							uni.switchTab({
+								url: '/pages/tabbar/home/home'
+							});
+						}, 1000);
+					}
+				});
 			}
 		});
 	},
@@ -223,6 +248,101 @@ export default {
 				}
 			}
 			return amount
+		},
+		checkOut() { //购物车结算函数
+			uni.showModal({
+				content: '是否确认结算该订单？',
+				success: function(res) {
+					if (res.confirm) {
+									this.$store.state.showCartsList = false;
+									this.$refs['showpopup'].close();
+									let buy = [];
+									let amount = 0
+									for (let i = 0; i < this.$store.state.main.length; i++) {
+										for (let j = 0; j < this.$store.state.main[i].list.length; j++) {
+											amount += (this.$store.state.main[i].list[j].goodsNumber * this.$store.state.main[i].list[j].price)
+											if(this.$store.state.main[i].list[j].goodsNumber){
+												let buypush = {"goodsId":this.$store.state.main[i].list[j].id,"number":this.$store.state.main[i].list[j].goodsNumber,"goodsPrice":this.$store.state.main[i].list[j].price}
+												buy.push(buypush)
+											}
+										}
+									}
+									if(buy.length == 0){
+										uni.showToast({
+											icon: 'none',
+											title: '购物车为空，无法结算',
+											duration: 1500,
+											success: function() {
+											}
+										})
+										return false;
+									}
+									uni.request({
+										url: 'http://39.97.108.238/GP/public/goods/checkout',
+										method: 'post',
+										header: {
+											'content-type': 'application/x-www-form-urlencoded' //自定义请求头信息
+										},
+										data: {
+											user_name: this.name,
+											amount: amount,
+											buy: JSON.stringify(buy)
+										},
+										success: function(res) {
+											if (res.data.status == 1) {
+												uni.showToast({
+													icon: 'none',
+													title: '结算成功，花费' + res.data.data.price,
+													duration: 1500,
+													success: function() {
+														for (let i = 0; i < this.$store.state.main.length; i++) {
+															for (let j = 0; j < this.$store.state.main[i].list.length; j++) {
+																this.$store.state.main[i].list[j].goodsNumber = 0;
+															}
+														}
+														this.$store.state.cartsNumber = 0;
+														setTimeout(function() {
+															uni.switchTab({
+																url: '/pages/tabbar/order/order'
+															});
+														}, 1000);
+													}.bind(this)
+												});
+											} else {
+												uni.showToast({
+													icon: 'none',
+													title: '结算失败，返回重试',
+													duration: 1500,
+													success: function() {
+														setTimeout(function() {
+															uni.switchTab({
+																url: '/pages/tabbar/home/home'
+															});
+														}, 1000);
+													}
+												});
+											}
+										}.bind(this),
+										fail: function() {
+											uni.showToast({
+												icon: 'none',
+												title: '结算失败，返回重试',
+												duration: 1500,
+												success: function() {
+													setTimeout(function() {
+														uni.switchTab({
+															url: '/pages/tabbar/home/home'
+														});
+													}, 1000);
+												}
+											});
+										}
+									});
+					} else if (res.cancel) {
+						console.log('用户点击取消');
+					}
+				}.bind(this)
+			});
 		}
 	},
 	components: {
@@ -255,7 +375,6 @@ export default {
 	align-items: flex-start;
 	align-content: flex-start;
 	font-size: 28rpx;
-
 	.left {
 		width: 200rpx;
 		background-color: #f6f6f6;
@@ -383,5 +502,13 @@ export default {
 	background-color: #fff;
 	padding: 15px;
 	font-size: 14px;
+}
+.oldPrice{
+	text-decoration: line-through;
+}
+.newPrice{
+	padding-left: 10upx;
+	font-size: 50upx;
+	color: #f70f0f;
 }
 </style>

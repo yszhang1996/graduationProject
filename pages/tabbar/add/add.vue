@@ -1,30 +1,30 @@
 <template>
-	<view class="content" :class="{'active':active}">
-		<image class="logo" :class="{'active':active}" src="../../../static/logo.png"  mode="aspectFit"></image>
+	<view class="content" :class="{ active: active }">
 		<view class="tabbar-box-wrap">
 			<view class="tabbar-box">
-				<view class="tabbar-box-item" @click="goToPage('/pages/add-detial/add-handSelect/add-handSelect')">
+				<view class="tabbar-box-item" @click="goToPage('/pages/add-detial/add-handSelect/add-handSelect', 1)">
 					<image class="box-image" src="../../../static/img/manual.png" mode="aspectFit"></image>
 					<text class="explain">自主选座</text>
 				</view>
-				<view class="tabbar-box-item" @click="goToPage('/pages/tabbar-3-detial/tabbar-3-video/tabbar-3-video')">
+				<view class="tabbar-box-item" @click="intelligenceSelect()">
 					<image class="box-image" src="../../../static/img/home/grid/2.png" mode="aspectFit"></image>
 					<text class="explain">智能选座</text>
 				</view>
-				<view class="tabbar-box-item" @click="goToPage('/pages/tabbar-3-detial/tabbar-3-qa/tabbar-3-qa')">
+				<view class="tabbar-box-item" @click="goToPage('/pages/add-detial/add-help/add-help',1)">
 					<image class="box-image" src="../../../static/img/help.png" mode="aspectFit"></image>
 					<text class="explain">帮助</text>
 				</view>
 			</view>
 		</view>
 	</view>
-</template> 
+</template>
 
 <script>
 export default {
 	data() {
 		return {
-			active: false
+			active: false,
+			name: ""
 		};
 	},
 	onLoad() {},
@@ -37,17 +37,140 @@ export default {
 		this.active = false;
 	},
 	methods: {
-		goToPage(url) {
-			if (!url) return;
-			uni.showLoading({
-			    title: '正在帮您选座'
-			});
-			setTimeout(function () {
-			    uni.hideLoading();
-			}, 3000);
-			uni.navigateTo({
-				url
-			});
+		goToPage(url, judge) {
+			if (judge) { //judge这个变量如果存在则需要判读当前用户是否有尚未结算的上机消费订单，不传入=不存在，则不判断，直接执行跳转
+				console.log(this.$store.state.seatstatus);
+				if (this.$store.state.seatstatus == 1) {
+					uni.showModal({
+						content: '当前有未结算的上机消费订单，是否继续选座？',
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+								if (!url) return;
+								// uni.showLoading({
+								//     title: '正在帮您选座'
+								// });
+								// setTimeout(function () {
+								//     uni.hideLoading();
+								// }, 3000);
+								uni.navigateTo({
+									url
+								});
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+								return
+							}
+						}
+					});
+				}else{
+					if (!url) return;
+					// uni.showLoading({
+					//     title: '正在帮您选座'
+					// });
+					// setTimeout(function () {
+					//     uni.hideLoading();
+					// }, 3000);
+					uni.navigateTo({
+						url
+					});
+				}
+			}else{
+				uni.navigateTo({
+					url
+				});
+			}
+		},
+		intelligenceSelect(){
+			if (this.$store.state.seatstatus == 1) {
+				uni.showModal({
+					content: '当前有未结算的上机消费订单，是否继续选座？',
+					success: function(res) {
+						if (res.confirm) {
+							uni.showLoading({
+							    title: '正在帮您选座'
+							});
+							setTimeout(function () {
+							    uni.hideLoading();
+							}, 3000);
+							uni.getStorage({
+							    key: 'userInfo',
+							    success: function (res) {
+							        console.log(JSON.stringify(res.data));
+									this.name = res.data.username;
+							    }.bind(this),
+								fail:function(err){
+									console.log(err.errMsg);
+									uni.navigateTo({
+									    url: '/pages/login/login'
+									});
+								}
+							});
+							console.log(this.name);
+							// uni.request({
+							// 	url: 'http://39.97.108.238/GP/public/seat/intelligenceSelect',
+							// 	method: 'get',
+							// 	data: {
+							// 		name: this.name
+							// 	},
+							// 	success: function(res) {
+							// 		this.orderList = res.data;
+							// 	}.bind(this),
+							// 	complete:function(){
+							// 	}
+							// });
+							// uni.navigateTo({
+							//     url: '/pages/add-detial/add-handSelect/add-handSelect?id=1&name=uniapp'
+							// });
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+							return
+						}
+					}.bind(this)
+				});
+			}else{
+				uni.showLoading({
+				    title: '正在帮您选座'
+				});
+				uni.getStorage({
+				    key: 'userInfo',
+				    success: function (res) {
+				        console.log(JSON.stringify(res.data));
+						this.name = res.data.username;
+				    }.bind(this),
+					fail:function(err){
+						console.log(err.errMsg);
+						uni.navigateTo({
+						    url: '/pages/login/login'
+						});
+					}
+				});
+				console.log(this.name);
+				uni.request({
+					url: 'http://39.97.108.238/GP/public/seat/intelligenceSelect',
+					method: 'get',
+					data: {
+						name: this.name
+					},
+					success: function(res) {
+						console.log(JSON.stringify(res.data.status));
+						if(res.data.status == undefined){
+							return;
+						}
+						console.log("!11");
+						setTimeout(function(){
+							uni.hideLoading();
+							uni.navigateTo({
+							    url: '/pages/add-detial/add-handSelect/add-handSelect?ColumnNum='+res.data.data.col+'&RowNum='+res.data.data.row+'&SeatCode='+res.data.data.SeatCode+''
+							});
+						},1000);
+					}.bind(this),
+					complete:function(){
+					}
+				});
+				// uni.navigateTo({
+				//     url: '/pages/add-detial/add-handSelect/add-handSelect?ColumnNum=1&RowNum=uniapp&SeatCode=12'
+				// });
+			}
 		}
 	}
 };

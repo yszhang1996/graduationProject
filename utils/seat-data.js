@@ -1,14 +1,14 @@
 export const seatData = [{
 	"YCoord": "3",
 	"XCoord": "5",
-	"SeatCode": "4413141101#01#20",
+	"SeatCode": "4413141101",
 	"Status": 0,
 	"RowNum": "1",
 	"ColumnNum": "20"
 },{
 	"YCoord": "3",
 	"XCoord": "6",
-	"SeatCode": "4413141101#01#19",
+	"SeatCode": "4413141101",
 	"Status": 0,
 	"RowNum": "1",
 	"ColumnNum": "19"

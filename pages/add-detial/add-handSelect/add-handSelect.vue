@@ -10,8 +10,21 @@
 				</view>
 			</view>
 			<movable-area :style="'height:' + (seatRow * 40 + 350) + 'rpx;width: 100vw;top:' + rpxNum * 132 + 'px'" class="pt-f left-0">
+				<!-- <image class="seatImage" src="../../../static/img/selectSeat/selectseat.jpg" :style="'width:'+seatSize*17.8+'px;height:'+(seatSize*7.2)+'px;top:'+((seatSize*5)+37)+'px'" mode=""></image> -->
 				<movable-view
-					:style="'width: 100vw;height:' + (seatRow * 40 + 350) + 'rpx;'"
+					:style="
+						'width: 100vw;height:' +
+							(seatRow * 40 + 350) +
+							'rpx;background-size:' +
+							seatSize * 17.8 +
+							'px ' +
+							seatSize * 7.2 +
+							'px;backgroundPosition:' +
+							seatSize * 1.8 +
+							'px ' +
+							(seatSize * 5 + 37) +
+							'px;'
+					"
 					:inertia="true"
 					:scale="true"
 					:scale-min="0.95"
@@ -19,6 +32,7 @@
 					direction="all"
 					@change="onMove"
 					@scale="onScale"
+					class="movable-view"
 				>
 					<!-- <view class="Stage dp-f jc-c ai-c fz-22 color-333">
 						5号厅
@@ -32,7 +46,7 @@
 							:key="col"
 							class="dp-ib"
 							:style="'width:' + seatSize + 'px;height:' + seatSize + 'px'"
-							@click="handleChooseSeat(index, col)"
+							@click="handleChooseSeat(index, col, item[col].SeatCode)"
 						>
 							<image v-if="seat.type === 0" class="w-100 h-100" src="../../../static/img/selectSeat/unselected.png" mode="aspectFit"></image>
 							<image v-else-if="seat.type === 1" class="w-100 h-100" src="../../../static/img/selectSeat/selected.png" mode="aspectFit"></image>
@@ -99,7 +113,9 @@ export default {
 			mArr: [], //排数提示
 			optArr: [], //选中的座位数组。
 			isWXAPP: false,
-			selectFlag: false //新的逻辑，只能选中一个座位，选中座位之后再点击选中别的，不生效
+			selectFlag: false, //新的逻辑，只能选中一个座位，选中座位之后再点击选中别的，不生效
+			selectSeatCode: 0,
+			name: ''
 		};
 	},
 	computed: {
@@ -113,7 +129,7 @@ export default {
 			return 750 / this.boxWidth;
 		}
 	},
-	onLoad() {
+	onLoad(e) {
 		//获取宽度
 		uni.getSystemInfo({
 			success: function(e) {
@@ -123,11 +139,24 @@ export default {
 				//#endif
 			}
 		});
-		this.initData();
+		uni.request({
+			url: 'http://39.97.108.238/GP/public/seat/all',
+			method: 'get',
+			success: function(res) {
+				// console.log(JSON.stringify(res.data));
+				this.initData(res.data);
+			}.bind(this)
+		});
+		console.log(JSON.stringify(e));
+		if(e.ColumnNum){
+			setTimeout(function(){
+				this.handleChooseSeat(e.RowNum-1,Math.abs(e.ColumnNum-21),e.SeatCode)
+			}.bind(this),500);
+		}
 	},
 	methods: {
-		initData: function() {
-			let arr = seatData;
+		initData: function(seatList) {
+			let arr = seatList;
 			//假数据说明：SeatCode座位编号，RowNum-行号，ColumnNum-纵号，YCoord-Y坐标，XCoord-X坐标，Status-状态
 			let row = 0;
 			let col = 0;
@@ -232,20 +261,115 @@ export default {
 		},
 		//选定且购买座位
 		buySeat: function() {
-			if (this.SelectNum === 0) {
-				return;
-			}
-			let oldArray = [];
-			for (let i = 0; i < this.seatRow; i++) {
-				for (let j = 0; j < this.seatCol; j++) {
-					if (this.seatArray[i][j].type === 1) {
-						oldArray.push(this.seatArray[i][j].SeatCode);
+			uni.showModal({
+				content: '是否确认选择此座位？',
+				success: function(res) {
+					if (res.confirm) {
+						//确定
+						if (this.SelectNum === 0) {
+							return;
+						}
+						if (this.$store.state.seatstatus == 1){
+							uni.showToast({
+								icon: 'none',
+								title: '选座错误，您有尚未结算的上机消费订单',
+								duration: 1500,
+								success: function() {
+									setTimeout(function() {
+										uni.switchTab({
+											url: '/pages/tabbar/home/home'
+										});
+									}, 1000);
+								}
+							});
+							return;
+						}
+						console.log(this.selectSeatCode);
+						uni.getStorage({
+							key: 'userInfo',
+							success: function(res) {
+								console.log(res.data.username);
+								this.name = res.data.username;
+							}.bind(this),
+							fail: function(res) {
+								uni.showToast({
+									icon: 'none',
+									title: '选座错误，返回重试',
+									duration: 1500,
+									success: function() {
+										setTimeout(function() {
+											uni.switchTab({
+												url: '/pages/tabbar/home/home'
+											});
+										}, 1000);
+									}
+								});
+							}
+						});
+						uni.request({
+							url: 'http://39.97.108.238/GP/public/seat/seatupdate', //仅为示例，并非真实接口地址。
+							method: 'post',
+							header: {
+								'content-type': 'application/x-www-form-urlencoded' //自定义请求头信息
+							},
+							data: {
+								name: this.name,
+								seatcode: this.selectSeatCode
+							},
+							success: res => {
+								if (res.data.status == 1) {
+									uni.showToast({
+										icon: 'none',
+										title: '选座成功',
+										duration: 1500,
+										success: function() {
+											this.$store.state.seatstatus = 1;
+											setTimeout(function() {
+												uni.switchTab({
+													url: '/pages/tabbar/order/order'
+												});
+											}, 1000);
+										}.bind(this)
+									});
+								} else {
+									uni.showToast({
+										icon: 'none',
+										title: '选座错误，返回重试',
+										duration: 1500,
+										success: function() {
+											setTimeout(function() {
+												uni.switchTab({
+													url: '/pages/tabbar/home/home'
+												});
+											}, 1000);
+										}
+									});
+								}
+							},
+							fail: res => {
+								uni.showToast({
+									icon: 'none',
+									title: '选座错误，返回重试',
+									duration: 1500,
+									success: function() {
+										setTimeout(function() {
+											uni.switchTab({
+												url: '/pages/tabbar/home/home'
+											});
+										}, 1000);
+									}
+								});
+							}
+						});
+					} else if (res.cancel) {
+						console.log('用户点击取消');
 					}
-				}
-			}
+				}.bind(this)
+			});
 		},
 		//处理座位选择逻辑
-		handleChooseSeat: function(row, col) {
+		handleChooseSeat: function(row, col, SeatCode1) {
+			console.log("row:"+row+"col:"+col+"seat:"+SeatCode1);
 			if (this.selectFlag && (this.selectFlag[0] != row || this.selectFlag[1] != col)) {
 				return false;
 			} else {
@@ -262,7 +386,7 @@ export default {
 				} else if (seatValue === 0) {
 					newArray[row][col].type = 1;
 					this.SelectNum++;
-					this.getOptArr(newArray[row][col], 1);
+					this.getOptArr(newArray[row][col], 1, SeatCode1);
 					this.selectFlag = [row, col];
 				}
 				//必须整体更新二维数组，Vue无法检测到数组某一项更新,必须slice复制一个数组才行
@@ -270,7 +394,8 @@ export default {
 			}
 		},
 		//处理已选座位数组
-		getOptArr: function(item, type) {
+		getOptArr: function(item, type, SeatCode1) {
+			this.selectSeatCode = SeatCode1;
 			let optArr = this.optArr;
 			if (type === 1) {
 				optArr.push(item);
@@ -627,5 +752,13 @@ export default {
 .bought-seat {
 	background: url('../../../static/img/selectSeat/bought.png') center center no-repeat;
 	background-size: 100% 100%;
+}
+.seatImage {
+	position: absolute;
+	left: 60upx;
+}
+
+.movable-view {
+	background: url('../../../static/img/selectSeat/selectseat.jpg') no-repeat;
 }
 </style>

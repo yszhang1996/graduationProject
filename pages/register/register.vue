@@ -3,23 +3,24 @@
 		<view class="main">
 			<view class="user">
 				<image src="../../static/img/login/user.png" mode=""></image>
-				<input class="input-user" type="text" value="" maxlength="20" focus="true" placeholder="请输入用户名/手机号" placeholder-class="input-placeholder-user" />
+				<input class="input-user" type="text" v-model="name" maxlength="20" placeholder="请输入用户名/手机号" placeholder-class="input-placeholder-user" />
 			</view>
 			<view class="password">
 				<image src="../../static/img/login/password.png" mode=""></image>
-				<input class="input-password" type="text" password value="" maxlength="20" placeholder="请输入密码" placeholder-class="input-placeholder-user" />
+				<input class="input-password" type="text" password v-model="password" maxlength="20" placeholder="请输入密码" placeholder-class="input-placeholder-user" />
 			</view>
 			<view class="passwordconfirm">
 				<image src="../../static/img/login/password.png" mode=""></image>
-				<input class="input-passwordconfirm" type="text" password value="" maxlength="20" placeholder="确认密码" placeholder-class="input-placeholder-user" />
+				<input class="input-passwordconfirm" type="text" password v-model="passwordconfirm" maxlength="20" placeholder="确认密码" placeholder-class="input-placeholder-user" />
 			</view>
 			<view class="agreement">
-				<image src="../../static/img/login/agreement.png" mode=""></image>
+				<image v-if="!agreement" src="../../static/img/login/agreement.png" mode="" @click="changeAgreement()"></image>
+				<image v-else src="../../static/img/login/agreementConfirm.png" mode="" @click="changeAgreement()"></image>
 				<text>用户协议</text>
 			</view>
-			<view class="submit"><text>注册</text></view>
+			<view class="submit" @click="submit()"><text>注册</text></view>
 			<view class="goTo">
-				<text>返回登录</text>
+				<text @click="backLogin()">返回登录</text>
 				<text></text>
 			</view>
 		</view>
@@ -29,8 +30,108 @@
 <script>
 export default {
 	data() {
-		return {};
-	}
+		return {
+			agreement:false,
+			name: '',
+			password: '',
+			passwordconfirm: ''
+		};
+	},
+	methods: {
+		backLogin: function() {
+			uni.navigateBack();
+		},
+		changeAgreement: function() {
+			this.agreement=!this.agreement
+		},
+		submit: function() {
+			if (!this.name) {
+				uni.showToast({
+					icon: 'none',
+					title: '请输入用户名',
+					duration: 2000
+				});
+				return false;
+			}
+			if (!this.password) {
+				uni.showToast({
+					icon: 'none',
+					title: '请输入密码',
+					duration: 2000
+				});
+				return false;
+			}
+			if (!this.passwordconfirm) {
+				uni.showToast({
+					icon: 'none',
+					title: '请输入确认密码',
+					duration: 2000
+				});
+				return false;
+			}
+			if (this.password != this.passwordconfirm) {
+				uni.showToast({
+					icon: 'none',
+					title: '两次输入的密码不一致',
+					duration: 2000
+				});
+				return false;
+			}
+			if (!this.agreement) {
+				uni.showToast({
+					icon: 'none',
+					title: '请先同意用户协议',
+					duration: 2000
+				});
+				return false;
+			}
+			uni.request({
+				url: 'http://39.97.108.238/GP/public/user/register', //仅为示例，并非真实接口地址。
+				method: 'post',
+				header: {
+					'content-type': 'application/x-www-form-urlencoded' //自定义请求头信息
+				},
+				data: {
+					name: this.name,
+					password: this.password
+				},
+				success: res => {
+					console.log(JSON.stringify(res.data));
+					if (res.data.status == 1) {
+						uni.setStorage({
+							key: 'username',
+							data: this.name,
+							success: function() {
+								uni.showToast({
+									icon: 'none',
+									title: '注册成功',
+									duration: 1500,
+									success: function() {
+										setTimeout(function(){
+											uni.navigateBack();
+										},1000);
+									}
+								});
+							}
+						});
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: res.data.message,
+							duration: 2000
+						});
+					}
+				},
+				fail: err => {
+					uni.showToast({
+						icon: 'none',
+						title: '网络故障，请稍后重试',
+						duration: 2000
+					});
+				}
+			});
+		}
+	},
 };
 </script>
 
@@ -41,7 +142,7 @@ export default {
 	width: 750upx;
 	height: 1075upx;
 	position: absolute;
-	bottom: 0;
+	top: 259upx;
 	padding-top: 250upx;
 	box-sizing: border-box;
 

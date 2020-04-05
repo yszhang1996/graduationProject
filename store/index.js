@@ -43,7 +43,8 @@ const store = new Vuex.Store({
 		login: false,
 		token: '',
 		avatarUrl: '',
-		userName: ''
+		userName: '',
+		seatstatus: '',
 	},
 	mutations: {
 		login(state, provider) {
