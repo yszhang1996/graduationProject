@@ -1,9 +1,9 @@
 <template>
-	<view class="w-100">
+	<view class="w-100" style="background-color: #f5f5f5;">
 		<view class="bg-f1 h-100vh">
 			<view class="pt-f left-0 w-100 p-0-32 bg-white z1000" :style="'height: 132rpx;top:0'">
 				<view>
-					<view class="fz-34 fw-b pt-20">欢迎使用xx网吧选座系统</view>
+					<view class="fz-34 fw-b pt-20 navigationbar">欢迎使用xx网吧选座系统</view>
 					<!-- <view class="mt-10 fz-28 color-666">
 						2021年1月22日 国语3D
 					</view> -->
@@ -148,10 +148,13 @@ export default {
 			}.bind(this)
 		});
 		console.log(JSON.stringify(e));
-		if(e.ColumnNum){
-			setTimeout(function(){
-				this.handleChooseSeat(e.RowNum-1,Math.abs(e.ColumnNum-21),e.SeatCode)
-			}.bind(this),500);
+		if (e.ColumnNum) {
+			setTimeout(
+				function() {
+					this.handleChooseSeat(e.RowNum - 1, Math.abs(e.ColumnNum - 21), e.SeatCode);
+				}.bind(this),
+				500
+			);
 		}
 	},
 	methods: {
@@ -269,7 +272,7 @@ export default {
 						if (this.SelectNum === 0) {
 							return;
 						}
-						if (this.$store.state.seatstatus == 1){
+						if (this.$store.state.seatstatus == 1) {
 							uni.showToast({
 								icon: 'none',
 								title: '选座错误，您有尚未结算的上机消费订单',
@@ -369,7 +372,7 @@ export default {
 		},
 		//处理座位选择逻辑
 		handleChooseSeat: function(row, col, SeatCode1) {
-			console.log("row:"+row+"col:"+col+"seat:"+SeatCode1);
+			console.log('row:' + row + 'col:' + col + 'seat:' + SeatCode1);
 			if (this.selectFlag && (this.selectFlag[0] != row || this.selectFlag[1] != col)) {
 				return false;
 			} else {
@@ -594,7 +597,7 @@ export default {
 }
 
 .color-fff {
-	color: #fff;
+	color: #fbfbfb;
 }
 
 .br-15 {
@@ -656,7 +659,7 @@ export default {
 }
 
 .bg-white {
-	background-color: #fff;
+	background-color: #fbfbfb;
 }
 
 .z1000 {
@@ -759,6 +762,10 @@ export default {
 }
 
 .movable-view {
-	background: url('../../../static/img/selectSeat/selectseat.jpg') no-repeat;
+}
+
+.navigationbar {
+	width: 100%;
+	text-align: center;
 }
 </style>

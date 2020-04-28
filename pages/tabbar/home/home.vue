@@ -360,7 +360,7 @@
 		color: #4f4f4f;
 	}
 	.content {
-		background-color: #f6f6f6;
+		// background-color: #f6f6f6;
 		height: calc(100vh - 100upx);
 		//#ifdef APP-PLUS
 		height: 100vh;

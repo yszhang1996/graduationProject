@@ -16,7 +16,6 @@
 			</view>
 			<view class="submit" @click="submit()"><text>登录</text></view>
 			<view class="goTo">
-				<text>短信验证码登录</text>
 				<text @click="gotoUrl('/pages/register/register')">立即注册</text>
 			</view>
 		</view>
@@ -210,7 +209,7 @@ export default {
 		margin: 0 auto;
 		font-size: 26upx;
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
 	}
 }
 .input-placeholder-user {

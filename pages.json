@@ -82,11 +82,15 @@
         },
         {
             "path" : "pages/editNickname/editNickname",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "修改昵称"
+			}
         },
         {
             "path" : "pages/editPassword/editPassword",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "修改密码"
+			}
         }
         ,{
             "path" : "pages/agreement/agreement",

@@ -1,8 +1,7 @@
 <template>
 	<view class="content">
-		<view class="title"><text>修改密码</text></view>
 		<view class="setting">
-			<view class="password">
+			<!-- <view class="password">
 				<image src="../../static/img/login/password.png" mode=""></image>
 				<input class="input-password" type="text" password v-model="password" maxlength="20" placeholder="请输入旧密码" placeholder-class="input-placeholder-user" />
 			</view>
@@ -21,8 +20,21 @@
 					placeholder="请输入确认密码"
 					placeholder-class="input-placeholder-user"
 				/>
+			</view> -->
+			<!-- <view class="submit" @click="submit()"><text>确认修改</text></view> -->
+			<view class="cu-form-group">
+				<view class="title">旧密码</view>
+				<input placeholder="请输入旧密码" password v-model="password" name="input"></input>
 			</view>
-			<view class="submit" @click="submit()"><text>确认修改</text></view>
+			<view class="cu-form-group">
+				<view class="title">新密码</view>
+				<input placeholder="请输入新密码" password v-model="newpassword" name="input"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">确认密码</view>
+				<input placeholder="请输入确认密码" password v-model="confirmpassword" name="input"></input>
+			</view>
+			<button class="cu-btn bg-blue shadow-blur round" @click="submit()">确认修改</button>
 		</view>
 	</view>
 </template>
@@ -155,5 +167,10 @@ export default {
 }
 .submit {
 	text-align: center;
+}
+
+.cu-btn{
+	width: 50%;
+	margin: 20rpx auto;
 }
 </style>
