@@ -1,7 +1,5 @@
 <template>
 	<view class="content">
-		<view class="header" id="header"><text>首页</text></view>
-		<view class="header"><text>首页</text></view>
 		<!-- 		<view class="header">
 			<uni-icons type="location" size="18"></uni-icons><text>当前座位：</text><text>D区18号</text><text>></text>
 		</view> -->
@@ -55,25 +53,33 @@
 		</view>
 		<view class="games">
 			<view class="games-header">
-				<text class="games-header-left">活动赛事</text>
-				<text class="games-header-right">更多></text>
+				<text class="games-header-left">活动资讯</text>
+				<text class="games-header-right" @click="goToPage('../../informationAll/informationAll','活动资讯')">更多></text>
 			</view>
 			<view>
 				<scroll-view class="scroll-view_H" scroll-x="true" @scroll="scroll" scroll-left="0">
-					<view id="demo1" class="scroll-view-item_H"><image src="../../../static/img/home/lunbo1.jpg" mode=""></image></view>
-					<view id="demo2" class="scroll-view-item_H"><image src="../../../static/img/home/lunbo2.jpg" mode=""></image></view>
-					<view id="demo3" class="scroll-view-item_H"><image src="../../../static/img/home/lunbo3.jpg" mode=""></image></view>
+					<view id="demo1" class="scroll-view-item_H" @click="goToUrl('http://m.kuai8.com/news/156974.html','签到领皮肤')">
+						<image src="../../../static/img/home/lunbo1.jpg" mode=""></image>
+					</view>
+					<view id="demo2" class="scroll-view-item_H" @click="goToUrl('https://baijiahao.baidu.com/s?id=1611121341811848873&wfr=spider&for=pc&isFailFlag=1','快乐套路')">
+						<image src="../../../static/img/home/lunbo2.jpg" mode=""></image>
+					</view>
+					<view id="demo3" class="scroll-view-item_H" @click="goToUrl('https://baijiahao.baidu.com/s?id=1617824579689279648&wfr=spider&for=pc','开黑的快乐时光')">
+						<image src="../../../static/img/home/lunbo3.jpg" mode=""></image>
+					</view>
 				</scroll-view>
 			</view>
 		</view>
 		<view class="news">
 			<view class="news-header">
-				<text class="news-header-left">资讯推荐</text>
-				<text class="news-header-right">更多></text>
+				<text class="news-header-left">游戏攻略</text>
+				<text class="news-header-right" @click="goToPage('../../informationAll/informationAll','游戏攻略')">更多></text>
 			</view>
 			<view class="news-all">
-				<view class="news-list">
-					<image src="../../../static/img/home/yunding.jpg" mode=""></image>
+				<view class="news-list" @click="goToUrl('https://lol.tuwan.com/407246/','云顶懒人看版本')">
+					<view class="news-list-image">
+						<image src="../../../static/img/home/strategy/yunding.jpg" mode=""></image>
+					</view>
 					<view class="news-list-info">
 						<text class="news-list-info-title">云顶懒人看版本星系机制迎来更新</text>
 						<view class="news-list-info-from">
@@ -82,43 +88,51 @@
 						</view>
 					</view>
 				</view>
-				<view class="news-list">
-					<image src="../../../static/img/home/yunding.jpg" mode=""></image>
+				<view class="news-list" @click="goToUrl('https://lol.tuwan.com/407848/','反制加里奥')">
+					<view class="news-list-image">
+						<image src="../../../static/img/home/strategy/jialiao.jpg" mode=""></image>
+					</view>
 					<view class="news-list-info">
-						<text class="news-list-info-title">云顶懒人看版本星系机制迎来更新</text>
+						<text class="news-list-info-title">支援型英雄制霸中路？三个思路成功反制</text>
 						<view class="news-list-info-from">
-							<text class="news-list-origin">作者：兔玩LOL</text>
-							<text class="news-list-time">04-03 15:19</text>
+							<text class="news-list-origin">作者：Funky</text>
+							<text class="news-list-time">04-24 15:12</text>
 						</view>
 					</view>
 				</view>
-				<view class="news-list">
-					<image src="../../../static/img/home/yunding.jpg" mode=""></image>
+				<view class="news-list" @click="goToUrl('https://lol.tuwan.com/407969/','凯隐加强')">
+					<view class="news-list-image">
+						<image src="../../../static/img/home/strategy/kaiyin.jpg" mode=""></image>
+					</view>
 					<view class="news-list-info">
-						<text class="news-list-info-title">云顶懒人看版本星系机制迎来更新</text>
+						<text class="news-list-info-title">凯隐Gank能力大大加强 10.9版本改动抢先看</text>
 						<view class="news-list-info-from">
-							<text class="news-list-origin">作者：兔玩LOL</text>
-							<text class="news-list-time">04-03 15:19</text>
+							<text class="news-list-origin">作者：若希</text>
+							<text class="news-list-time">04-29 13:34</text>
 						</view>
 					</view>
 				</view>
-				<view class="news-list">
-					<image src="../../../static/img/home/yunding.jpg" mode=""></image>
+				<view class="news-list" @click="goToUrl('https://lol.tuwan.com/407776/','云顶懒人看版本')">
+					<view class="news-list-image">
+						<image src="../../../static/img/home/strategy/gouxiong.jpg" mode=""></image>
+					</view>
 					<view class="news-list-info">
-						<text class="news-list-info-title">云顶懒人看版本星系机制迎来更新</text>
+						<text class="news-list-info-title">强攻狗熊异军突起 版本五大热门反制英雄</text>
 						<view class="news-list-info-from">
-							<text class="news-list-origin">作者：兔玩LOL</text>
-							<text class="news-list-time">04-03 15:19</text>
+							<text class="news-list-origin">作者：若希</text>
+							<text class="news-list-time">04-22 14:15</text>
 						</view>
 					</view>
 				</view>
-				<view class="news-list">
-					<image src="../../../static/img/home/yunding.jpg" mode=""></image>
+				<view class="news-list" @click="goToUrl('https://lol.tuwan.com/403355/','云顶懒人看版本')">
+					<view class="news-list-image">
+						<image src="../../../static/img/home/strategy/nvqiang.jpg" mode=""></image>
+					</view>
 					<view class="news-list-info">
-						<text class="news-list-info-title">云顶懒人看版本星系机制迎来更新</text>
+						<text class="news-list-info-title">五多兰女枪强势对线 韩服三大黑科技套路</text>
 						<view class="news-list-info-from">
-							<text class="news-list-origin">作者：兔玩LOL</text>
-							<text class="news-list-time">04-03 15:19</text>
+							<text class="news-list-origin">作者：Funky</text>
+							<text class="news-list-time">11-06 14:31</text>
 						</view>
 					</view>
 				</view>
@@ -200,16 +214,22 @@
 			durationChange(e) {
 				this.duration = e.target.value;
 			},
-			goToPage(url) {
+			goToPage(url, title) {
 				if (!url) return;
 				uni.navigateTo({
-					url
+					url: url + "?title=" + title
 				});
 			},
 			goToTabbarPage(url) {
 				if (!url) return;
 				uni.switchTab({
 					url
+				});
+			},
+			goToUrl(url, title) {
+				if (!url) return;
+				uni.navigateTo({
+					url: "../../webview/webview?url=" + url + "&title=" + title
 				});
 			},
 			// seat() {
@@ -356,9 +376,10 @@
 </script>
 
 <style lang="scss">
-	*{
+	* {
 		color: #4f4f4f;
 	}
+
 	.content {
 		// background-color: #f6f6f6;
 		height: calc(100vh - 100upx);
@@ -366,25 +387,9 @@
 		height: 100vh;
 		//#endif
 	}
-	.header {
-		background-color: #f6e1b9;
-		padding-top: var(--status-bar-height);
-		padding-right: 20upx;
-		margin-bottom: 20upx;
-		font-size: 36upx;
-		height: 60upx;
-		line-height: 60upx;
-		text-align: center;
-		width: 100%;
-	}
-	
-	#header{
-		position: fixed;
-		top: 0;
-		z-index: 10;
-	}
 
 	.content {
+		margin-top: 10rpx;
 		text-align: center;
 		/* border: 1upx #007aff solid; */
 	}
@@ -469,43 +474,43 @@
 		width: 100%;
 		margin-left: 32rpx;
 	}
-	
+
 	.scroll-view-item_H {
-	    display: inline-block;
-	    width: 318rpx;
-	    height: 178rpx;
+		display: inline-block;
+		width: 318rpx;
+		height: 178rpx;
 		margin: 10rpx;
-	    line-height: 300rpx;
-	    text-align: center;
+		line-height: 300rpx;
+		text-align: center;
 	}
-	
+
 	.scroll-view-item_H image {
-	    width: 318rpx;
-	    height: 178rpx;
+		width: 318rpx;
+		height: 178rpx;
 	}
-	
+
 	.news {
 		width: 100%;
 	}
-	
+
 	.news-header {
 		width: 90%;
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
-		margin:10rpx auto 0;
+		margin: 10rpx auto 0;
 	}
-	
+
 	.news-header-left {
 		font-size: 36rpx;
 	}
-	
+
 	.news-header-right {
 		font-size: 24rpx;
 		color: #a9aaac;
 	}
-	
-	.news-all{
+
+	.news-all {
 		width: 90%;
 		display: flex;
 		flex-direction: column;
@@ -513,43 +518,49 @@
 		justify-content: flex-start;
 		margin: 0 auto;
 	}
-	
-	.news-list{
+
+	.news-list {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		
-		image {
+
+		.news-list-image {
 			width: 190rpx;
 			height: 190rpx;
 			border-radius: 15rpx;
 			margin: 10rpx;
+
+			image {
+				width: 190rpx;
+				height: 190rpx;
+				border-radius: 15rpx;
+			}
 		}
 	}
-	
-	.news-list-info{
+
+	.news-list-info {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;
 		align-items: flex-start;
-		
-		.news-list-info-title{
+
+		.news-list-info-title {
 			font-size: 34rpx;
 			text-align: left;
-			
+
 		}
-		
-		.news-list-info-from{
+
+		.news-list-info-from {
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
 			margin-bottom: 10rpx;
-			
-			.news-list-origin{
+
+			.news-list-origin {
 				font-size: 24rpx;
 			}
-			
-			.news-list-time{
+
+			.news-list-time {
 				font-size: 24rpx;
 			}
 		}

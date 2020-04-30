@@ -4,7 +4,9 @@
         {
             "path" : "pages/tabbar/home/home",
             "style" : {
-                "navigationStyle" : "custom"
+                "navigationBarTitleText" : "首页",
+				"navigationBarBackgroundColor":"#f6e1b9",
+				"scrollIndicator":"none"
             }
         },
         {
@@ -22,7 +24,8 @@
         {
             "path" : "pages/tabbar/order/order",
             "style" : {
-                "navigationStyle" : "custom"
+                "navigationBarTitleText" : "订单",
+                "navigationBarBackgroundColor":"#f6e1b9"
             }
         },
         {
@@ -98,6 +101,16 @@
         }
         ,{
             "path" : "pages/privacyPolicy/privacyPolicy",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/webview/webview",
+            "style" : {
+				"navigationStyle" : "custom"
+			}
+        }
+        ,{
+            "path" : "pages/informationAll/informationAll",
             "style" : {}
         }
     ],
